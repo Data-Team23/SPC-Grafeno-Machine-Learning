@@ -47,9 +47,11 @@ class RFMClient:
         return self.df_rfm.reset_index().to_dict(orient='records')
 
     def get_cluster_centers(self):
+        """Retorna os centros dos clusters ajustados com as colunas apropriadas."""
         kmeans = KMeans(n_clusters=4, random_state=0)
-        kmeans.fit(self.df_rfm.drop(columns=['Cluster'], errors='ignore'))
-        centers = pd.DataFrame(kmeans.cluster_centers_, columns=self.df_rfm.columns[:-1])
+        X = self.df_rfm.drop(columns=['Cluster'], errors='ignore')
+        kmeans.fit(X)
+        centers = pd.DataFrame(kmeans.cluster_centers_, columns=X.columns)
         centers.index = [f"Cluster {i+1}" for i in range(len(centers))]
         return centers.reset_index().to_dict(orient='records')
 
